@@ -4,7 +4,7 @@ Compressed sensing is a signal processing technique that enables the reconstruct
 \begin{equation}
     y=Ax^*+\eta
 \end{equation}
-Since $m\ll n$, this system is underdetermined, then it is not possible to find a unique solution. The Nyquist–Shannon sampling theorem requires a certain amount of samples to perfectly reconstruct a signal, so compressed sensing exploits some features of the signal to address this problem in a context where the conditions of the aforementioned theorem are not met.
+Since $m\ll n$, this system is underdetermined, then it is not possible to find a unique solution. The Nyquist--Shannon sampling theorem requires a certain amount of samples to perfectly reconstruct a signal, so compressed sensing exploits some features of the signal to address this problem in a context where the conditions of the aforementioned theorem are not met.
 \\\\
 The standard version of the algorithm assumes the signal to be $k$-sparse, meaning that it has only $k$ coefficients different from zero when represented in some domain. This assumption allows the signal retrieval through the use of algorithms for solving minimization problems, such as LASSO \cite{tibshirani1996} for the $L^1$ norm minimization, under conditions on $A$ established by the classical compressed sensing literature \cite{candes2006,donoho2006}.
 \\\\
