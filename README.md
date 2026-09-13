@@ -308,7 +308,6 @@ afterwards, is in [`docs/model_selection.md`](docs/model_selection.md).
 ├── docs/
 │   ├── figures/                 figures used in the docs
 │   ├── model_selection.md       how each checkpoint was chosen
-│   ├── presentation_outline.md  slide-by-slide outline of the talk
 │   └── report/                  LaTeX source of the write-up
 └── tests/                     pytest suite covering the package
 ```

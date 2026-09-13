@@ -26,8 +26,6 @@ from csgm.config import ROOT_DIR
 DOCUMENTS = [
     ROOT_DIR / "README.md",
     ROOT_DIR / "docs" / "model_selection.md",
-    ROOT_DIR / "docs" / "presentation_outline.md",
-    ROOT_DIR / "docs" / "slides" / "slides.tex",
     ROOT_DIR / "models" / "README.md",
     *sorted((ROOT_DIR / "docs" / "report").glob("*.tex")),
     *sorted((ROOT_DIR / "notebooks").glob("*.ipynb")),
@@ -239,17 +237,6 @@ def test_the_architecture_the_prose_describes_is_the_one_that_is_built():
     listed = re.search(r"using ([\d, and]+) filters respectively", encoder_prose)
     assert listed, "vae.tex no longer lists the encoder's filters"
     assert [int(v) for v in re.findall(r"\d+", listed.group(1))] == filters(encoder)
-
-    found = 0
-    for name in ["README.md", "docs/presentation_outline.md", "docs/slides/slides.tex"]:
-        text = re.sub(r"\s+", " ", (ROOT_DIR / name).read_text(encoding="utf-8"))
-        pair = re.search(r"convolves (\d+) and (\d+) channels", text)
-        if pair:
-            found += 1
-            assert [int(pair.group(1)), int(pair.group(2))] == filters(generator)[1:3], (
-                f"{name} names the wrong two widest layers"
-            )
-    assert found >= 2, "the sentence naming the two widest layers is no longer found"
 
 
 def test_the_paper_architecture_is_spelled_out_correctly(prose):

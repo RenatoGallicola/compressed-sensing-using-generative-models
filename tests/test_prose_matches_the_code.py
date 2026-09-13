@@ -13,8 +13,6 @@ the parsers are read for their defaults, and every ratio is divided again.
 
 from __future__ import annotations
 
-import base64
-import hashlib
 import json
 import re
 
@@ -205,8 +203,6 @@ def test_the_seed_spread_is_the_one_its_own_table_gives():
 
     for path in [
         ROOT_DIR / "README.md",
-        ROOT_DIR / "docs" / "presentation_outline.md",
-        ROOT_DIR / "docs" / "slides" / "slides.tex",
         REPORT / "results.tex",
         REPORT / "conclusions.tex",
         REPORT / "vae.tex",
@@ -218,142 +214,6 @@ def test_the_seed_spread_is_the_one_its_own_table_gives():
         assert str(quoted) in stated, (
             f"{path.name} does not state the seed spread of {quoted}, it states {stated}"
         )
-
-
-def test_the_slide_figures_are_the_ones_the_notebooks_produced():
-    """Slide assets copied out of a notebook must still be that notebook's output.
-
-    Re-running a notebook rewrites its stored figure and nothing else, so
-    without this the deck would go on showing a picture the repository no longer
-    produces, exactly as the report's assets once did.
-    """
-    assets = ROOT_DIR / "docs" / "slides" / "assets"
-    if not assets.exists():
-        pytest.skip("the deck has no assets")
-
-    # The deck keeps its own copy of every figure so that its folder is all that
-    # has to be uploaded to build the talk. Each copy comes either from a
-    # notebook's stored output or from the figures the scripts generate.
-    sources = set()
-    for notebook in sorted((ROOT_DIR / "notebooks").glob("*.ipynb")):
-        cells = json.loads(notebook.read_text(encoding="utf-8"))["cells"]
-        for cell in cells:
-            for output in cell.get("outputs", []):
-                payload = output.get("data", {}).get("image/png")
-                if payload:
-                    sources.add(hashlib.sha256(base64.b64decode(payload)).hexdigest())
-    for directory in ("results/figures", "docs/figures"):
-        for figure in sorted((ROOT_DIR / directory).glob("*.png")):
-            sources.add(hashlib.sha256(figure.read_bytes()).hexdigest())
-
-    stale = [
-        path.name
-        for path in sorted(assets.glob("*.png"))
-        if hashlib.sha256(path.read_bytes()).hexdigest() not in sources
-    ]
-    assert not stale, (
-        f"{stale} match neither a notebook's output nor a generated figure; "
-        "re-copy them from whichever produced them"
-    )
-
-
-def test_the_deck_covers_the_outline():
-    """The deck and the outline have to describe the same talk."""
-    deck = (ROOT_DIR / "docs" / "slides" / "slides.tex").read_text(encoding="utf-8")
-    outline = (ROOT_DIR / "docs" / "presentation_outline.md").read_text(encoding="utf-8")
-
-    titles = [m.group(1).strip() for m in re.finditer(r"^## \d+\. (.+)$", outline, re.M)]
-    frames = re.findall(r"\\begin\{frame\}\{([^}]*)\}", deck)
-    missing = [t for t in titles[1:] if t not in frames]  # the first is the title slide
-    assert not missing, f"the deck has no frame for {missing}"
-    assert len(re.findall(r"\\note\{", deck)) >= len(titles) - 1, (
-        "every content slide carries what to say"
-    )
-    assert np.isclose(len(titles), 17), "the outline promises seventeen slides"
-
-
-#: Beamer ships these and no others. A name outside them stops the build with
-#: "File `beamercolorthemeX.sty' not found", which is only visible to whoever
-#: compiles the deck, and the deck is compiled elsewhere.
-BEAMER_THEMES = {
-    "AnnArbor",
-    "Antibes",
-    "Bergen",
-    "Berkeley",
-    "Berlin",
-    "Boadilla",
-    "CambridgeUS",
-    "Copenhagen",
-    "Darmstadt",
-    "Dresden",
-    "Frankfurt",
-    "Goettingen",
-    "Hannover",
-    "Ilmenau",
-    "JuanLesPins",
-    "Luebeck",
-    "Madrid",
-    "Malmoe",
-    "Marburg",
-    "Montpellier",
-    "PaloAlto",
-    "Pittsburgh",
-    "Rochester",
-    "Singapore",
-    "Szeged",
-    "Warsaw",
-    "boxes",
-    "default",
-}
-BEAMER_COLOUR_THEMES = {
-    "albatross",
-    "beaver",
-    "beetle",
-    "crane",
-    "default",
-    "dolphin",
-    "dove",
-    "fly",
-    "lily",
-    "monarch",
-    "orchid",
-    "rose",
-    "seagull",
-    "seahorse",
-    "sidebartab",
-    "spruce",
-    "whale",
-    "wolverine",
-}
-
-
-def test_the_deck_asks_for_themes_that_exist():
-    """A theme that does not exist fails the build and nothing else.
-
-    The structural checks on the deck all pass without it: the braces balance,
-    the images resolve, the frames match the outline. Only a compiler notices,
-    and the deck is compiled on someone else's machine.
-    """
-    deck = (ROOT_DIR / "docs" / "slides" / "slides.tex").read_text(encoding="utf-8")
-
-    named = re.findall(r"\\usetheme\{([^}]*)\}", deck)
-    assert named, "the deck no longer chooses a theme"
-    unknown = [name for name in named if name not in BEAMER_THEMES]
-    assert not unknown, f"no such beamer theme: {unknown}"
-
-    coloured = re.findall(r"\\usecolortheme\{([^}]*)\}", deck)
-    unknown = [name for name in coloured if name not in BEAMER_COLOUR_THEMES]
-    assert not unknown, f"no such beamer colour theme: {unknown}"
-
-    # Anything outside a plain installation has to be justified, since the deck
-    # is built wherever the talk is given.
-    allowed = {"inputenc", "fontenc", "babel", "amsmath", "amssymb", "graphicx", "booktabs"}
-    packages = {
-        name.strip()
-        for group in re.findall(r"\\usepackage(?:\[[^\]]*\])?\{([^}]*)\}", deck)
-        for name in group.split(",")
-    }
-    assert packages <= allowed, f"the deck needs packages beyond the usual: {packages - allowed}"
 
 
 def _values_the_artefacts_contain():
@@ -460,8 +320,6 @@ def test_no_quoted_decimal_is_a_number_the_project_never_measured():
     documents = [
         ROOT_DIR / "README.md",
         ROOT_DIR / "docs" / "model_selection.md",
-        ROOT_DIR / "docs" / "presentation_outline.md",
-        ROOT_DIR / "docs" / "slides" / "slides.tex",
         ROOT_DIR / "models" / "README.md",
         ROOT_DIR / "results" / "README.md",
         *sorted(REPORT.glob("*.tex")),
@@ -484,5 +342,5 @@ def test_no_quoted_decimal_is_a_number_the_project_never_measured():
             context = text[max(0, m.start() - 60) : m.end() + 30].strip()
             orphans.append(f"{path.name}: {token} in '{context}'")
 
-    assert checked >= 250, f"only {checked} decimals were found to check"
+    assert checked >= 240, f"only {checked} decimals were found to check"
     assert not orphans, "these values appear in no artefact:\n" + "\n".join(orphans)

@@ -1,6 +1,6 @@
 """Check that the numbers in the write-ups still match the benchmark.
 
-The report, the README, the slides and the notebooks all quote figures that come
+The report, the README and the notebooks all quote figures that come
 from ``results/benchmark.csv``. Nothing stops those from drifting apart when the
 experiment is re-run, and a stale number in a report is worse than no number, so
 they are verified here rather than by proofreading.
@@ -288,9 +288,7 @@ def normalise(text: str) -> str:
 
 DOCUMENTS = [
     ROOT_DIR / "README.md",
-    ROOT_DIR / "docs" / "presentation_outline.md",
     ROOT_DIR / "docs" / "model_selection.md",
-    ROOT_DIR / "docs" / "slides" / "slides.tex",
     ROOT_DIR / "models" / "README.md",
 ]
 
@@ -348,7 +346,7 @@ def test_the_headline_figures_appear_in_every_write_up(means, benchmark):
     best25 = means.loc[25, PRIORS].min()
     factor = means["lasso-dct"][25] / best25
 
-    for path in [ROOT_DIR / "README.md", ROOT_DIR / "docs" / "presentation_outline.md"]:
+    for path in [ROOT_DIR / "README.md"]:
         text = normalise(path.read_text(encoding="utf-8"))
         assert f"{saving:.1f}x" in text, f"{path.name} is missing the {saving:.1f}x saving"
         assert f"{factor:.1f}" in text, f"{path.name} is missing the {factor:.1f} factor at m=25"
@@ -538,8 +536,6 @@ def test_shared_figures_agree_with_the_data_in_every_document(benchmark, means):
         path.name: normalise(path.read_text(encoding="utf-8"))
         for path in (
             ROOT_DIR / "README.md",
-            ROOT_DIR / "docs" / "presentation_outline.md",
-            ROOT_DIR / "docs" / "slides" / "slides.tex",
             REPORT / "results.tex",
             REPORT / "conclusions.tex",
             REPORT / "summary.tex",
