@@ -34,7 +34,7 @@
 \usepackage[protrusion=true,expansion=true]{microtype}	
 \usepackage{amsmath,amsfonts,amsthm} % Math packages
 \usepackage[pdftex]{graphicx}	
-\usepackage{url}
+\usepackage[hyphens]{url}	% so a long link breaks at a hyphen instead of running into the margin
 
 \usepackage{amsmath,amssymb}
 
@@ -79,6 +79,15 @@
         Renato Gallicola\\[-3pt]		\normalsize
 }
 \date{}
+
+%%% This document separates paragraphs with an explicit line break, which leaves
+%%% the line before it short and makes TeX report an underfull box every time.
+%%% The two thresholds below stop it reporting those. They change what is
+%%% printed to the log and nothing about the typesetting: overfull boxes, the
+%%% ones that actually run into the margin, are governed by \hfuzz and are still
+%%% reported.
+\hbadness=10000
+\vbadness=10000
 
 %%% Begin document
 \begin{document}
