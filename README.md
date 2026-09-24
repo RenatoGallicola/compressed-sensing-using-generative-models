@@ -1,6 +1,6 @@
 # Compressed Sensing using Generative Models
 
-[![CI](https://github.com/RenatoGallicola/compressed-sensing-using-generative-models/actions/workflows/verify.yml/badge.svg)](https://github.com/RenatoGallicola/compressed-sensing-using-generative-models/actions/workflows/verify.yml)
+[![CI](https://github.com/RenatoGallicola/compressed-sensing-using-generative-models/actions/workflows/suite.yml/badge.svg)](https://github.com/RenatoGallicola/compressed-sensing-using-generative-models/actions/workflows/suite.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%20|%203.12-blue.svg)](https://www.python.org/)
 [![TensorFlow 2.17](https://img.shields.io/badge/TensorFlow-2.17-FF6F00.svg?logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
