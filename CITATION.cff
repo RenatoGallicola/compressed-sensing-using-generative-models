@@ -22,7 +22,8 @@ keywords:
   - generative adversarial network
   - inverse problems
 license: MIT
-date-released: 2024-07-17
+date-released: 2026-09-24
+version: 1.0.0
 references:
   - type: conference-paper
     title: Compressed Sensing using Generative Models
