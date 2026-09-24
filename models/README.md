@@ -28,6 +28,11 @@ training. Which epoch won, and what every candidate scored, is in
 per-epoch generators themselves are not committed, since those two files record
 everything the choice rested on.
 
+The VAE checkpoints are chosen the other way round, on validation loss rather
+than on representation error, because a variational autoencoder has one to be
+chosen on. Which seed won for each configuration, and what it scored, is in
+`vae_selection.txt`.
+
 All five generators map $z \in \mathbb{R}^k$ to a $28 \times 28 \times 1$ image
 with sigmoid outputs in $[0, 1]$, and were trained on MNIST scaled to the same
 range.

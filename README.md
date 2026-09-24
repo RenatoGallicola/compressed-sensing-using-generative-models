@@ -306,7 +306,6 @@ afterwards, is in [`docs/model_selection.md`](docs/model_selection.md).
 ├── models/                    pre-trained checkpoints (k = 20 and k = 30)
 ├── results/                   benchmark table, summary tables and figures
 ├── docs/
-│   ├── figures/                 figures used in the docs
 │   ├── model_selection.md       how each checkpoint was chosen
 │   └── report/                  LaTeX source of the write-up
 └── tests/                     pytest suite covering the package
@@ -321,6 +320,8 @@ cd compressed-sensing-using-generative-models
 python -m venv .venv && source .venv/bin/activate      # Windows: .venv\Scripts\activate
 pip install -e ".[dev]"
 pytest -q
+
+pre-commit install                                     # optional: runs ruff before each commit
 ```
 
 > **NumPy is pinned below 2.0.** The TensorFlow 2.16/2.17 wheels are built
